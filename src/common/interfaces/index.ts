@@ -1,0 +1,1 @@
+export { IResponse } from './responses/response';

@@ -7,8 +7,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Estatus } from "./Estatus";
 import { Rol } from "./Rol";
+import { Estatus } from "./Estatus";
 import { Usuario } from "./Usuario";
 
 @Index("FK_tipo_usuario_estatus", ["estatusId"], {})
@@ -30,7 +30,13 @@ export class TipoUsuario {
   @Column("varchar", { name: "descripcion", length: 100 })
   descripcion: string;
 
-  @Column("datetime", { name: "fecha_creacion", default: () => "'now()'" })
+  @Column("int", { name: "orden", nullable: true })
+  orden: number | null;
+
+  @Column("datetime", {
+    name: "fecha_creacion",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   fechaCreacion: Date;
 
   @Column("int", { name: "usuario_creacion", nullable: true })
@@ -42,19 +48,19 @@ export class TipoUsuario {
   @Column("int", { name: "usuario_edicion", nullable: true })
   usuarioEdicion: number | null;
 
-  @ManyToOne(() => Estatus, (estatus) => estatus.tipoUsuarios, {
-    onDelete: "NO ACTION",
-    onUpdate: "NO ACTION",
-  })
-  @JoinColumn([{ name: "estatus_id", referencedColumnName: "estatusId" }])
-  estatus: Estatus;
-
   @ManyToOne(() => Rol, (rol) => rol.tipoUsuarios, {
     onDelete: "NO ACTION",
     onUpdate: "NO ACTION",
   })
   @JoinColumn([{ name: "rol_id", referencedColumnName: "rolId" }])
   rol: Rol;
+
+  @ManyToOne(() => Estatus, (estatus) => estatus.tipoUsuarios, {
+    onDelete: "NO ACTION",
+    onUpdate: "NO ACTION",
+  })
+  @JoinColumn([{ name: "estatus_id", referencedColumnName: "estatusId" }])
+  estatus: Estatus;
 
   @OneToMany(() => Usuario, (usuario) => usuario.tipoUsuario)
   usuarios: Usuario[];
